@@ -20,6 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
+ * 相对于 jdk future api 增加了判断是否成功，以及增加删除 listener 的 api
+ * 并且提供了异常的包装  {@link this#cause()}
+ *
  * The result of an asynchronous operation.
  */
 @SuppressWarnings("ClassNameSameAsAncestorName")

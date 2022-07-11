@@ -32,6 +32,12 @@
             <artifactId>netty-buffer</artifactId>
             <version>4.1.79.Final-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-classes-epoll</artifactId>
+            <version>4.1.79.Final-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
