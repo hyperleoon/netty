@@ -15,8 +15,6 @@
  */
 package io.netty.util.concurrent;
 
-import static io.netty.util.internal.ObjectUtil.checkPositive;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -26,6 +24,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static io.netty.util.internal.ObjectUtil.checkPositive;
+
 /**
  * Abstract base class for {@link EventExecutorGroup} implementations that handles their tasks with multiple threads at
  * the same time.
@@ -34,6 +34,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
     private final EventExecutor[] children;
     private final Set<EventExecutor> readonlyChildren;
+    // 记录已经关闭的Reactor个数，用来判断NioEventLoopGroup中的Reactor是否已经全部关闭。
     private final AtomicInteger terminatedChildren = new AtomicInteger();
     private final Promise<?> terminationFuture = new DefaultPromise(GlobalEventExecutor.INSTANCE);
     private final EventExecutorChooserFactory.EventExecutorChooser chooser;

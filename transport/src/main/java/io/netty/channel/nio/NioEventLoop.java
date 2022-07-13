@@ -173,6 +173,10 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     private SelectorTuple openSelector() {
         final Selector unwrappedSelector;
         try {
+            // 通过 nio api 创建 Selector
+            // 1.通过系统变量-D java.nio.channels.spi.SelectorProvider指定SelectorProvider的自定义实现类全限定名。通过应用程序类加载器(Application Classloader)加载。
+            // 2.通过SPI方式加载。在工程目录META-INF/services下定义名为java.nio.channels.spi.SelectorProvider的SPI文件，文件中第一个定义的SelectorProvider实现类全限定名就会被加载。
+            // 3.如果以上两种方式均未被定义，那么就采用SelectorProvider系统默认实现sun.nio.ch.DefaultSelectorProvider。
             unwrappedSelector = provider.openSelector();
         } catch (IOException e) {
             throw new ChannelException("failed to open a new selector", e);
@@ -181,6 +185,8 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         if (DISABLE_KEY_SET_OPTIMIZATION) {
             return new SelectorTuple(unwrappedSelector);
         }
+
+        // 下面就是对 jdk SelectorImpl 的优化
 
         Object maybeSelectorImplClass = AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
@@ -213,9 +219,14 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             @Override
             public Object run() {
                 try {
+                    //  sun.nio.ch.SelectorImpl.selectedKeys
+                    //  Selector会将自己监听到的IO就绪的Channel放到selectedKeys中。
                     Field selectedKeysField = selectorImplClass.getDeclaredField("selectedKeys");
+                    // 用于向外部线程返回IO就绪的SelectionKey，这个集合在外部线程中只能做删除操作不可增加元素，并且不是线程安全的。
                     Field publicSelectedKeysField = selectorImplClass.getDeclaredField("publicSelectedKeys");
 
+
+                    // Java9版本以上通过sun.misc.Unsafe设置字段值的方式
                     if (PlatformDependent.javaVersion() >= 9 && PlatformDependent.hasUnsafe()) {
                         // Let us try to use sun.misc.Unsafe to replace the SelectionKeySet.
                         // This allows us to also do this in Java9+ without any extra flags.
@@ -277,6 +288,11 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         return newTaskQueue0(maxPendingTasks);
     }
 
+    /**
+     * 可以支持多个业务线程在处理完业务逻辑后，线程安全的向MpscQueue添加异步写任务，然后由单个Reactor线程来执行这些写任务。既然是单线程执行，那肯定是线程安全的了。
+     * @param maxPendingTasks
+     * @return
+     */
     private static Queue<Runnable> newTaskQueue0(int maxPendingTasks) {
         // This event loop never calls takeTask()
         return maxPendingTasks == Integer.MAX_VALUE ? PlatformDependent.<Runnable>newMpscQueue()

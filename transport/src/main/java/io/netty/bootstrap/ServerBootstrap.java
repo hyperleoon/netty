@@ -57,6 +57,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
     public ServerBootstrap() { }
 
     private ServerBootstrap(ServerBootstrap bootstrap) {
+        // 父类管理主 Reactor 线程组
         super(bootstrap);
         childGroup = bootstrap.childGroup;
         childHandler = bootstrap.childHandler;
@@ -148,6 +149,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
                     pipeline.addLast(handler);
                 }
 
+                // 隐示添加 ServerBootstrapAcceptor，用于在从Reactor线程组中选取一个Sub Reactor，将客户端NioSocketChannel 注册到Sub Reactor中的selector上。
                 ch.eventLoop().execute(new Runnable() {
                     @Override
                     public void run() {

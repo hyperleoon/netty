@@ -174,6 +174,7 @@ public class NioEventLoopGroup extends MultithreadEventLoopGroup {
 
         int argsLength = args.length;
         if (argsLength > 3) {
+            // 队列来保存Reactor中待执行的异步任务。
             taskQueueFactory = (EventLoopTaskQueueFactory) args[3];
         }
         if (argsLength > 4) {

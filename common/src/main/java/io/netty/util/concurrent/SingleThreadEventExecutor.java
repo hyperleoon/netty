@@ -45,6 +45,8 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 /**
+ *
+ * SingleThreadEventExecutor主要负责对普通任务队列的管理，以及异步任务的执行，Reactor线程的启停
  * Abstract base class for {@link OrderedEventExecutor}'s that execute all its submitted tasks in a single thread.
  *
  */

@@ -1,8 +1,8 @@
 package com.hyperleon.thinking.netty.test;
 
 import io.netty.channel.EventLoop;
-import io.netty.channel.MultithreadEventLoopGroup;
 import io.netty.channel.ThreadPerChannelEventLoopGroup;
+import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -25,11 +25,8 @@ public class EventLoopTest {
 
         // nio
         NioEventLoopGroup eventExecutors = new NioEventLoopGroup(2);
-        EventLoop nioLoop = eventExecutors.next();
+        NioEventLoop nioLoop = (NioEventLoop)eventExecutors.next();
         NioSocketChannel nioSocketChannel = new NioSocketChannel();
         NioServerSocketChannel nioServerSocketChannel = new NioServerSocketChannel();
-
-        new MultithreadEventLoopGroup()
-
     }
 }
