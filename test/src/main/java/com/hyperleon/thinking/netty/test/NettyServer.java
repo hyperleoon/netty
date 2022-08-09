@@ -10,6 +10,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
@@ -26,6 +27,12 @@ public class NettyServer {
             ServerBootstrap server = new ServerBootstrap();
             server.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
+                    .handler(new ChannelInitializer<ServerSocketChannel>() {
+                        @Override
+                        public void initChannel(ServerSocketChannel ch) {
+                            ch.pipeline().addLast(new TimeServerHandle());
+                        }
+                    })
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) {

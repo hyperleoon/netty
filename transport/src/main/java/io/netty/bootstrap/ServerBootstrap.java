@@ -76,6 +76,12 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
     }
 
     /**
+     * mainReactor => NioServerSocketChannel => 监听端口，接收客户端连接，为客户端创建初始化 NioSocketChannel
+     * 然后采用 round-robin 轮询的方式从ReactorGroup中选择一个 SubReactor 与该客户端 NioSocketChannel 进行绑定。
+     *
+     * subReactor => NioSocketChannel => 是netty中定义客户端连接的一个模型，每个连接对应一个。
+     * SubReactor负责监听处理绑定在其上的所有NioSocketChannel上的IO事件。
+     *
      * Set the {@link EventLoopGroup} for the parent (acceptor) and the child (client). These
      * {@link EventLoopGroup}'s are used to handle all the events and IO for {@link ServerChannel} and
      * {@link Channel}'s.
@@ -130,6 +136,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
 
     @Override
     void init(Channel channel) {
+        // 向NioServerSocketChannelConfig设置ServerSocketChannelOption
         setChannelOptions(channel, newOptionsArray(), logger);
         setAttributes(channel, newAttributesArray());
 
@@ -150,6 +157,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
                 }
 
                 // 隐示添加 ServerBootstrapAcceptor，用于在从Reactor线程组中选取一个Sub Reactor，将客户端NioSocketChannel 注册到Sub Reactor中的selector上。
+                // 异步
                 ch.eventLoop().execute(new Runnable() {
                     @Override
                     public void run() {

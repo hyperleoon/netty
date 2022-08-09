@@ -5,7 +5,7 @@
     <parent>
         <artifactId>netty-parent</artifactId>
         <groupId>io.netty</groupId>
-        <version>4.1.79.Final-SNAPSHOT</version>
+        <version>4.1.80.Final-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,23 +20,23 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
-            <version>4.1.79.Final-SNAPSHOT</version>
+            <version>4.1.80.Final-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>
-            <version>4.1.79.Final-SNAPSHOT</version>
+            <version>4.1.80.Final-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-buffer</artifactId>
-            <version>4.1.79.Final-SNAPSHOT</version>
+            <version>4.1.80.Final-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-transport-classes-epoll</artifactId>
-            <version>4.1.79.Final-SNAPSHOT</version>
+            <version>4.1.80.Final-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

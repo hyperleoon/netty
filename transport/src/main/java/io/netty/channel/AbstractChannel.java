@@ -47,6 +47,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
     private final Channel parent;
     private final ChannelId id;
     private final Unsafe unsafe;
+    // 为channel分配独立的pipeline用于IO事件编排
     private final DefaultChannelPipeline pipeline;
     private final VoidChannelPromise unsafeVoidPromise = new VoidChannelPromise(this, false);
     private final CloseFuture closeFuture = new CloseFuture(this);
@@ -461,6 +462,11 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             return remoteAddress0();
         }
 
+        /**
+         * 注册Channel到绑定的Reactor上
+         * @param eventLoop
+         * @param promise
+         */
         @Override
         public final void register(EventLoop eventLoop, final ChannelPromise promise) {
             ObjectUtil.checkNotNull(eventLoop, "eventLoop");
